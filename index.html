@@ -266,7 +266,7 @@ const ROAD = 1100;                          // half road width (world units)
 const LANES = [-0.667, 0, 0.667];           // lane centres, -1..1 = road edges
 const CAM_H = 1100;                          // camera height above the road
 const GRAV = 6600;                          // gravity (units/s²)
-const BASE_MAX = 10500;                     // base top speed (units/s)
+const BASE_MAX = 4400;                      // base top speed (units/s): about 2 road-widths a second, like Vacuum Racer
 
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -302,9 +302,9 @@ const rgba = (h, a) => { const A = hex2rgb(h); return `rgba(${A[0]},${A[1]},${A[
    GAME DATA: difficulties, cities, characters, boards, cosmetics, skills
    --------------------------------------------------------------------- */
 const DIFFS = {
-  easy:   { name: "Easy",   speed: 1.00, density: 0.62, ai: 0.45, aiPace: 0.86, aiShoot: 0,    catchW: 0.30, drift: 0.55, mult: 1.0, segs: 5200, gap: [34, 52] },
-  hard:   { name: "Hard",   speed: 1.15, density: 1.00, ai: 0.75, aiPace: 0.96, aiShoot: 0.35, catchW: 0.20, drift: 0.95, mult: 1.5, segs: 6200, gap: [24, 38] },
-  expert: { name: "Expert", speed: 1.30, density: 1.40, ai: 0.95, aiPace: 1.01, aiShoot: 0.8,  catchW: 0.12, drift: 1.45, mult: 2.0, segs: 7200, gap: [16, 28] }
+  easy:   { name: "Easy",   speed: 1.00, density: 0.62, ai: 0.45, aiPace: 0.86, aiShoot: 0,    catchW: 0.30, drift: 0.55, mult: 1.0, segs: 2300, gap: [20, 30] },
+  hard:   { name: "Hard",   speed: 1.12, density: 1.00, ai: 0.75, aiPace: 0.96, aiShoot: 0.35, catchW: 0.20, drift: 0.95, mult: 1.5, segs: 2650, gap: [15, 22] },
+  expert: { name: "Expert", speed: 1.25, density: 1.40, ai: 0.95, aiPace: 1.01, aiShoot: 0.8,  catchW: 0.12, drift: 1.45, mult: 2.0, segs: 3000, gap: [11, 17] }
 };
 const DIFF_KEYS = ["easy", "hard", "expert"];
 
@@ -1061,7 +1061,7 @@ function buildTrack(cityKey, diffKey, mode) {
     for (let i = 0; i < hold; i++) addSeg(curve, lerp(y0, y1, ease((enter + i + 1) / n)));
     for (let i = 0; i < leave; i++) addSeg((1 - ease(i / leave)) * curve, lerp(y0, y1, ease((enter + hold + i + 1) / n)));
   };
-  const total = mode === "race" ? diff.segs : 9000;
+  const total = mode === "race" ? diff.segs : 3200;
   addRoad(0, 70, 0, 0, 0);
   while (segs.length < total + 260) {
     const r = rng();
@@ -1075,11 +1075,11 @@ function buildTrack(cityKey, diffKey, mode) {
   /* Zones: trams, bridges, harbour, market square */
   const zone = (kind, from, len) => { for (let i = from; i < Math.min(from + len, segs.length); i++) segs[i].kind = kind; T.zones.push({ kind, from, len }); };
   const span = total - 300;
-  if (city.tram) for (const f of [0.18, 0.55]) zone("tram", Math.floor(span * f + rng.int(0, 200)), rng.int(320, 480));
-  if (cityKey === "wroclaw") for (const f of [0.1, 0.32, 0.48, 0.72, 0.88]) zone("bridge", Math.floor(span * f), rng.int(70, 120));
-  if (cityKey === "gdansk") for (const f of [0.38, 0.8]) zone("harbour", Math.floor(span * f), rng.int(260, 380));
-  if (cityKey === "rzeszow") for (const f of [0.3, 0.7]) zone("square", Math.floor(span * f), rng.int(180, 260));
-  if (cityKey === "warsaw") zone("bridge", Math.floor(span * 0.4), 110);
+  if (city.tram) for (const f of [0.18, 0.55]) zone("tram", Math.floor(span * f + rng.int(0, 90)), rng.int(150, 220));
+  if (cityKey === "wroclaw") for (const f of [0.1, 0.32, 0.48, 0.72, 0.88]) zone("bridge", Math.floor(span * f), rng.int(40, 60));
+  if (cityKey === "gdansk") for (const f of [0.38, 0.8]) zone("harbour", Math.floor(span * f), rng.int(120, 170));
+  if (cityKey === "rzeszow") for (const f of [0.3, 0.7]) zone("square", Math.floor(span * f), rng.int(80, 120));
+  if (cityKey === "warsaw") zone("bridge", Math.floor(span * 0.4), 50);
 
   /* Scenery */
   const art = cityArt(cityKey);
@@ -1087,10 +1087,10 @@ function buildTrack(cityKey, diffKey, mode) {
   const place = (seg, side, sprite, x, extra = {}) => seg.spr.push({ s: sprite, x: side * x, ...extra });
   for (let i = 0; i < segs.length; i++) {
     const seg = segs[i], k = seg.kind;
-    if (i % 12 === 0) for (const side of [-1, 1]) place(seg, side, art.lamps, 1.2, { px: 30, lamp: true, glow: cityKey === "warsaw" ? "#ffe9c8" : "#ffcf7a" });
+    if (i % 7 === 0) for (const side of [-1, 1]) place(seg, side, art.lamps, 1.2, { px: 30, lamp: true, glow: cityKey === "warsaw" ? "#ffe9c8" : "#ffcf7a" });
     if (k === "bridge") { if (i % 4 === 0) { seg.deco = "rail"; } continue; }
     for (const side of [-1, 1]) {
-      if (k === "harbour" && side === 1) { if (i % 90 === 10 && art.extras.crane) place(seg, side, art.extras.crane, 4.6, { px: 44 }); continue; }
+      if (k === "harbour" && side === 1) { if (i % 45 === 10 && art.extras.crane) place(seg, side, art.extras.crane, 4.6, { px: 44 }); continue; }
       const next = side < 0 ? nextL : nextR;
       if (i >= next) {
         let sprite, x, gap;
@@ -1110,7 +1110,7 @@ function buildTrack(cityKey, diffKey, mode) {
   /* Gameplay: obstacles, rails, pickups */
   const laneFree = new Map();   // seg -> Set of blocked lanes (tall) for spacing checks
   const lastLow = [-999, -999, -999];
-  const canLow = (i, l) => i - lastLow[l] >= 62;
+  const canLow = (i, l) => i - lastLow[l] >= 26;
   const addOb = (i, type, lane, extra = {}) => {
     if (OB[type].low && !OB[type].ramp) lastLow[lane] = i;
     const o = { type, x: LANES[lane], lane, ...OB[type], ...extra };
@@ -1122,7 +1122,7 @@ function buildTrack(cityKey, diffKey, mode) {
   const addRail = (i, lane, len, ledge) => {
     const r = { x: LANES[lane], lane, s0: i, s1: i + len, h: ledge ? 270 : 240, kind: ledge ? "ledge" : "rail" };
     T.rails.push(r); for (let j = i; j <= i + len && j < segs.length; j++) segs[j].rails.push(r);
-    for (let j = i + 4; j < i + len - 2; j += 5) addItem(j, "star", lane, r.h + 170);
+    for (let j = i + 3; j < i + len - 2; j += 3) addItem(j, "star", lane, r.h + 170);
     return r;
   };
   const W = { low1: 3, low2: 2, lowAll: diffKey === "easy" ? 0.4 : 1.2, tall1: 3, tall2: diffKey === "easy" ? 0.3 : 1.6, rail: 2.2, ramp: 1.3, pads: 1, stars: 1.8, crate: 0.5, ped: cityKey === "rzeszow" ? 1.4 : 0.8 };
@@ -1133,33 +1133,33 @@ function buildTrack(cityKey, diffKey, mode) {
   const end = Math.min(total - 60, segs.length - 60);
   const hiddenAt = mode === "race" ? [0.14, 0.33, 0.52, 0.7, 0.86].map(f => Math.floor(f * end)) : [];
   let hiddenIdx = 0;
-  for (let i = 90; i < end; ) {
+  for (let i = 45; i < end; ) {
     const seg = segs[i], tramZone = seg.kind === "tram";
     // a hidden collectible: a ramp with the item high above
     if (hiddenIdx < hiddenAt.length && i >= hiddenAt[hiddenIdx]) {
       const lane = rng.int(0, 2), id = hiddenIdx++;
-      addOb(i, "ramp", lane); for (let j = 6; j < 40; j += 6) addItem(i + j, "star", lane, 200 + Math.sin(j / 40 * Math.PI) * 700);
-      if (!S.collect[cityKey][id]) { addItem(i + 28, "hidden", lane, 1500, { id }); T.hidden.push({ seg: i + 28, id }); }
-      i += 60; continue;
+      addOb(i, "ramp", lane); for (let j = 3; j < 24; j += 3) addItem(i + j, "star", lane, 200 + Math.sin(j / 26 * Math.PI) * 700);
+      if (!S.collect[cityKey][id]) { addItem(i + 13, "hidden", lane, 1500, { id }); T.hidden.push({ seg: i + 13, id }); }
+      i += 30; continue;
     }
     let p = choose();
     if (tramZone && (p === "tall1" || p === "tall2" || p === "ped" || p === "lowAll")) p = "low1";
     let lane = tramZone ? rng.pick([0, 2]) : rng.int(0, 2);
     const other = l => [0, 1, 2].filter(x => x !== l && (!tramZone || x !== 1));
-    let used = 8;
+    let used = 5;
     if (p === "lowAll" && ![0, 1, 2].every(l => canLow(i, l))) p = "stars";
     if ((p === "low1" || p === "low2") && !canLow(i, lane)) { const alt = [0, 1, 2].filter(l => canLow(i, l) && (!tramZone || l !== 1)); if (alt.length) lane = rng.pick(alt); else p = "stars"; }
     switch (p) {
       case "low1": addOb(i, rng.pick(lows), lane); if (rng.chance(0.5)) addItem(i, "star", lane, 600); break;
       case "low2": { const o2 = other(lane).filter(l => canLow(i, l)); const ls = rng.chance(0.5) && o2.length ? [lane, rng.pick(o2)] : [lane]; ls.forEach(l => addOb(i, rng.pick(lows), l)); break; }
       case "lowAll": [0, 1, 2].forEach(l => addOb(i, "barrier", l)); addItem(i, "star", 1, 620); break;
-      case "tall1": addOb(i, rng.chance(0.6) ? "kiosk" : "column", lane); for (let j = 1; j <= 3; j++) addItem(i - j * 4, "star", rng.pick(other(lane)), 160); break;
+      case "tall1": addOb(i, rng.chance(0.6) ? "kiosk" : "column", lane); for (let j = 1; j <= 3; j++) addItem(i - j * 2, "star", rng.pick(other(lane)), 160); break;
       case "tall2": { const free = rng.int(0, 2); [0, 1, 2].filter(l => l !== free).forEach(l => addOb(i, rng.chance(0.5) ? "kiosk" : "column", l)); addItem(i, "star", free, 160); break; }
-      case "rail": { const len = rng.int(48, 86); addRail(i, lane, len, rng.chance(0.35)); used = len + 6;
+      case "rail": { const len = rng.int(24, 42); addRail(i, lane, len, rng.chance(0.35)); used = len + 4;
         { const o2 = other(lane).filter(l => canLow(i + Math.floor(len / 2), l)); if (diffKey !== "easy" && rng.chance(0.5) && o2.length) addOb(i + Math.floor(len / 2), rng.pick(lows), rng.pick(o2)); } break; }
-      case "ramp": addOb(i, "ramp", lane); for (let j = 6; j < 40; j += 6) addItem(i + j, "star", lane, 200 + Math.sin(j / 40 * Math.PI) * 650); used = 44; break;
-      case "pads": for (let j = 0; j < 3; j++) addItem(i + j * 10, "pad", lane, 0); used = 30; break;
-      case "stars": { let l = lane; for (let j = 0; j < 6; j++) { addItem(i + j * 4, "star", l, 160); if (j === 2 && !tramZone) l = rng.pick(other(l)); } used = 26; break; }
+      case "ramp": addOb(i, "ramp", lane); for (let j = 3; j < 24; j += 3) addItem(i + j, "star", lane, 200 + Math.sin(j / 26 * Math.PI) * 650); used = 26; break;
+      case "pads": for (let j = 0; j < 3; j++) addItem(i + j * 5, "pad", lane, 0); used = 15; break;
+      case "stars": { let l = lane; for (let j = 0; j < 6; j++) { addItem(i + j * 2, "star", l, 160); if (j === 2 && !tramZone) l = rng.pick(other(l)); } used = 14; break; }
       case "crate": if (crates < 3 && i > end * 0.12) { addItem(i, "crate", lane, 120); crates++; } else addItem(i, "star", lane, 160); break;
       case "ped": { segs[i].zebra = true; const fromLeft = rng.chance(0.5); T.peds.push({ seg: i, x: fromLeft ? -1.35 : 1.35, vx: (fromLeft ? 1 : -1) * rng.range(0.32, 0.5), sprite: rng.int(0, SPR.peds.length - 1), t: rng() * 2, wait: rng.range(0, 1.2) }); break; }
     }
@@ -1167,8 +1167,8 @@ function buildTrack(cityKey, diffKey, mode) {
     i += Math.max(used, Math.round(gap));
   }
   /* Trams run along the middle lane in tram zones and move slower than you */
-  for (const z of T.zones.filter(z => z.kind === "tram")) for (let s = z.from + 40; s < z.from + z.len - 60; s += rng.int(120, 190))
-    T.trams.push({ z: s * SEG, len: 14 * SEG, x: 0, speed: BASE_MAX * 0.42, start: s * SEG, endZ: (z.from + z.len) * SEG, color: { warsaw: ["#f2c62a", "#c8313e"], gdansk: ["#e8e4dc", "#b8323a"], wroclaw: ["#e8eef4", "#2f6fb8"] }[cityKey] || ["#f2c62a", "#c8313e"] });
+  for (const z of T.zones.filter(z => z.kind === "tram")) for (let s = z.from + 20; s < z.from + z.len - 30; s += rng.int(60, 95))
+    T.trams.push({ z: s * SEG, len: 10 * SEG, x: 0, speed: BASE_MAX * 0.42, start: s * SEG, endZ: (z.from + z.len) * SEG, color: { warsaw: ["#f2c62a", "#c8313e"], gdansk: ["#e8e4dc", "#b8323a"], wroclaw: ["#e8eef4", "#2f6fb8"] }[cityKey] || ["#f2c62a", "#c8313e"] });
   return T;
 }
 const segAt = (T, z) => T.segs[clamp(Math.floor(z / SEG), 0, T.segs.length - 1)];
@@ -1228,7 +1228,7 @@ class Skater {
     if (this.invuln > 0 || this.state === "bail" || this.finished) return false;
     this.state = "bail"; this.crashT = 0.9; this.speed *= (0.38 + 0.4 * this.resist); this.y = Math.max(0, this.y); this.vy = this.y > 0 ? 0 : 0;
     this.flip = null; this.grabbing = false; this.rail = null; this.manual = false; this.boosting = false;
-    this.loseCombo(); this.emit("crash", { reason }); return true;
+    this.loseCombo(); this.emit("crash", { reason }); if (window.AUTOPILOT) (Skater.log ||= []).push((this.isPlayer ? "P:" : "R:") + reason); return true;
   }
   painted() {
     if (this.invuln > 0 || this.finished) return;
@@ -1387,7 +1387,7 @@ const Game = {
     I.flip = Input.consume("flip"); I.grab = !!Input.down.grab; I.manual = !!Input.down.manual; I.boost = Input.consume("boost");
     I.fire = Input.consume("fire");
     const tap = Input.consume("tap");
-    if (tap) { if (p.canShoot() && this.rivals.some(r => r.z > p.z && r.z - p.z < 60 * SEG)) I.fire = true; else if (p.airborne) I.flip = true; else if (p.canShoot()) I.fire = true; }
+    if (tap) { if (p.canShoot() && this.rivals.some(r => r.z > p.z && r.z - p.z < 35 * SEG)) I.fire = true; else if (p.airborne) I.flip = true; else if (p.canShoot()) I.fire = true; }
     return I;
   },
   stepSkaters(dt, auto) {
@@ -1405,11 +1405,11 @@ const Game = {
       if (this.mode === "race" && !s.finished && s.z >= T.finish * SEG) { if (s.isPlayer) this.finishPlayer(); else { s.finished = true; s.finishTime = this.time; } }
     }
     for (const tr of T.trams) {
-      const near = this.all.some(s => tr.z - s.z < 160 * SEG && tr.z - s.z > -40 * SEG);
+      const near = this.all.some(s => tr.z - s.z < 90 * SEG && tr.z - s.z > -30 * SEG);
       if (near || tr.active) { tr.active = true; if (tr.z + tr.len < tr.endZ) tr.z += tr.speed * dt; }
     }
     for (const p of T.peds) {
-      const near = this.all.some(s => (p.seg * SEG - s.z) < 90 * SEG && (p.seg * SEG - s.z) > -10 * SEG);
+      const near = this.all.some(s => (p.seg * SEG - s.z) < 45 * SEG && (p.seg * SEG - s.z) > -10 * SEG);
       if (!near) continue;
       p.t += dt; if (p.wait > 0) { p.wait -= dt; continue; }
       p.x += p.vx * dt; if (Math.abs(p.x) > 1.45) p.vx = -p.vx;
@@ -1472,8 +1472,8 @@ const Game = {
     if (s.isPlayer) Audio2.sfx("shoot");
     for (let k = 0; k < n; k++) {
       const dx = n > 1 ? (k ? 0.12 : -0.12) : 0;
-      if (s.isPlayer) this.pellets.push({ z: s.z + SEG, x: s.x + dx, y: s.y + 400, vz: s.speed + 9500, owner: s, life: 2.2 });
-      else this.pellets.push({ z: s.z - SEG, x: s.x + dx, y: s.y + 400, vz: s.speed - 7600, owner: s, life: 3 });
+      if (s.isPlayer) this.pellets.push({ z: s.z + SEG, x: s.x + dx, y: s.y + 400, vz: s.speed + 4800, owner: s, life: 2.2 });
+      else this.pellets.push({ z: s.z - SEG, x: s.x + dx, y: s.y + 400, vz: s.speed - 3400, owner: s, life: 3 });
     }
   },
   updatePellets(dt) {
@@ -1502,7 +1502,7 @@ const Game = {
     p.bank(); p.finished = true; p.finishTime = this.time; p.boosting = false;
     if (this.mode === "race") {
       // rivals still racing: estimate their time from distance left
-      for (const r of this.rivals) if (!r.finished) { r.estTime = this.time + Math.max(0, (this.T.finish * SEG - r.z)) / Math.max(4000, r.speed); }
+      for (const r of this.rivals) if (!r.finished) { r.estTime = this.time + Math.max(0, (this.T.finish * SEG - r.z)) / Math.max(BASE_MAX * 0.4, r.speed); }
       this.rank();
       const pl = p.place; Audio2.sfx(pl === 1 ? "win" : "finish"); UI.say(p, pl === 1 ? "win" : "lose", 2.6);
       Render.burst("confetti", p);
@@ -1548,7 +1548,7 @@ function makeBrain(r, diffKey, idx) {
     // pace with light rubber-banding so races stay close
     if (!r.isPlayer) {
       const gap = (p.z - r.z) / SEG;
-      r.maxSpeed = r.baseMax * d.aiPace * personal * (1 + clamp(gap / 400, -0.07, 0.09));
+      r.maxSpeed = r.baseMax * d.aiPace * personal * (1 + clamp(gap / 180, -0.07, 0.09));
     } else r.maxSpeed = r.baseMax;
     if (r.state === "bail" || r.finished) return I;
     think -= dt;
@@ -1598,7 +1598,7 @@ function makeBrain(r, diffKey, idx) {
       shootCool -= dt;
       const ahead = (r.z - p.z) / SEG;
       if (r.aimT > 0) { r.aimT -= dt; if (r.aimT <= 0) { G.firePellets(r, 1); r.aimLane = null; } }
-      else if (shootCool <= 0 && ahead > 4 && ahead < 45 && r.onGround) { r.aimT = 0.7; r.aimLane = r.lane; shootCool = rnd(5, 9) / d.aiShoot; }
+      else if (shootCool <= 0 && ahead > 4 && ahead < 30 && r.onGround) { r.aimT = 0.7; r.aimLane = r.lane; shootCool = rnd(5, 9) / d.aiShoot; }
       if (r.aimT > 0) { I.left = I.right = false; }
     }
     return I;
@@ -2430,7 +2430,7 @@ const UI = {
     set("hCombo", combo);
     if (G.mode === "race") { set("hPos", String(p.place)); set("hOf", "/4"); set("hTime", fmtTime(G.time)); }
     else { set("hPos", String(Math.max(0, Math.ceil(90 - G.time)))); set("hOf", "s"); set("hTime", "SCORE RUN"); }
-    set("hSpeed", String(Math.round(p.speed / BASE_MAX * 38)));
+    set("hSpeed", String(Math.round(p.speed / BASE_MAX * 24)));
     const bw = Math.round(p.boostMeter * 100) + "%"; if (c.bw !== bw) { c.bw = bw; this.el("hBoost").style.width = bw; }
     this.el("hBoostBar").classList.toggle("on", p.boosting);
     const has = p.charges > 0 || p.shotLevel > 0; const sh = this.el("hShot");
