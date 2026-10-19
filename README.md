@@ -1,6 +1,6 @@
 # Jazda! Polish Streets
 
-A 2.5D pixel-art street-skating racer through Warsaw, Rzeszów, Gdańsk and Wrocław. It is one HTML file: no build step, no server, no paid libraries. All the art and music is generated in code.
+A 2.5D street-skating racer through Warsaw, Rzeszów, Gdańsk and Wrocław, in smooth HD or the original pixel-art style. It is one HTML file: no build step, no server, no paid libraries. All the art and music is generated in code.
 
 ## Play it on GitHub Pages
 
@@ -35,6 +35,7 @@ To play it on your own computer, open `index.html` in Chrome, Edge, Firefox or S
 - **Collectibles:** 20 hidden items, 5 per city (mermaid badges, golden pączki, seagulls and gnomes).
 - **Saving:** auto-saves to `localStorage` with a versioned format, plus JSON export and import.
 - **Accessibility:** colourblind mode (shapes and outlines, not only colour), three text sizes, reduced motion, subtitles for every voice line, remappable keys and full keyboard menus.
+- **Graphics style:** HD (default) draws the world at full screen resolution. The skaters, buildings, trees and billboards are redrawn as detailed smooth art (shaded clothes, faces, hair, window frames, cornices, balconies, brickwork, lit rooms at night); other sprites are smoothly upscaled. It also adds soft shadows, layered clouds, street-lamp light pools, wet-road reflections, bloom and detailed asphalt. Pixel switches back to the original 400 × 225 look. Change it in Options → Graphics → Style.
 - **Performance:** Auto quality drops to Medium or Low when the frame rate falls, then steps back up.
 
 ## Optional assets
@@ -68,7 +69,7 @@ Character ids are `stary`, `stara`, `kuba` and `ola`. City ids are `warsaw`, `rz
 | TRACK | Seeded road layout, city zones, scenery, obstacle patterns with a guaranteed free path, rails, pickups |
 | SKATER | Shared physics for the player and the AI: lanes, jumps, flips, grabs, manuals, grinds, boost, crashes |
 | GAME | Race flow, rival AI, collisions, pickups, paint pellets, positions, rewards |
-| RENDER | Pseudo-3D road, parallax, sprites with hill clipping, lights, particles, weather, motion blur, colour split, vignette |
+| RENDER | Pseudo-3D road, parallax, sprites with hill clipping, lights, particles, weather, motion blur, colour split, vignette; HD mode (Scale2x sprite upscaling, bloom, lamp lighting) |
 | AUDIO | Web Audio music sequencer per city, synthesized sound effects, rolling and grind loops, voice lines |
 | UI / MAIN | Menus, HUD, pause and results screens; game loop and adaptive quality |
 
