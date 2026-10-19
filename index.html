@@ -1154,6 +1154,130 @@ function drawSkaterFrontHD(x, L, pose, f) {
   x.restore();
 }
 
+/* ---------- HD props: street furniture, kiosks, people, collectibles, lamps, landmarks ---------- */
+const PROP_HD = {
+  bin(x) {
+    A.rr(x, 2.2, 4, 9.6, 17, 1.2, A.lg(x, 2, 0, 12, 0, [[0, "#4f8058"], [0.5, "#3f6b4a"], [1, "#2c5236"]]));
+    for (const y of [8, 12, 16]) A.rr(x, 2.2, y, 9.6, 0.8, 0.2, "#5d8a68");
+    A.rr(x, 1, 2, 12, 3, 1.2, "#2f4f37"); A.rr(x, 4, 1.2, 6, 1.2, 0.5, "#24402c"); A.rr(x, 3, 19.8, 8, 1.6, 0.6, "#222");
+  },
+  cone(x) {
+    x.beginPath(); x.moveTo(6, 0.2); x.lineTo(10.4, 13.2); x.lineTo(1.6, 13.2); x.closePath(); x.fillStyle = A.lg(x, 1.5, 0, 10.5, 0, [[0, "#ffa060"], [0.45, "#ff7a2a"], [1, "#c85010"]]); x.fill();
+    x.save(); x.clip(); A.rr(x, 0, 4.6, 12, 2.2, 0, "#f4f1ea"); A.rr(x, 0, 9, 12, 2, 0, "#f4f1ea"); x.restore();
+    A.rr(x, 0, 12.8, 12, 3, 0.8, "#2a2a2a"); A.ln(x, [0.6, 13.2, 11.4, 13.2], 0.4, "#4a4a4a");
+  },
+  barrier(x) {
+    for (const lx of [3, 38]) { A.rr(x, lx, 4, 3, 18, 0.8, A.lg(x, lx, 0, lx + 3, 0, [[0, "#a8a8a8"], [1, "#6a6a6a"]])); A.rr(x, lx - 1.6, 20.4, 6.2, 1.6, 0.6, "#555"); }
+    x.save(); A.rr(x, 0, 2.6, 44, 9.6, 1); x.clip();
+    for (let i = -2; i < 12; i++) A.poly(x, [i * 8, 12.2, i * 8 + 4, 2.6, i * 8 + 8, 2.6, i * 8 + 4, 12.2], i % 2 ? "#f4f1ea" : "#d8303c");
+    x.fillStyle = A.lg(x, 0, 2.6, 0, 12.2, [[0, "rgba(255,255,255,.25)"], [1, "rgba(0,0,0,.2)"]]); x.fillRect(0, 2.6, 44, 9.6); x.restore();
+    A.rr(x, 12.6, 12.8, 18.8, 7.4, 0.8, "#ffd23a"); A.text(x, "UWAGA", 22, 16.6, 16.8, 5.4, "#1a1a1a", 800);
+  },
+  bench(x) {
+    for (const lx of [3, 32]) A.rr(x, lx, 9, 3, 7, 0.6, "#333");
+    for (const [y, c] of [[2.6, "#b07a48"], [6.6, "#9a6a3e"]]) { A.rr(x, 0, y, 38, 3.2, 1.2, c); for (let i = 3; i < 37; i += 4) A.ln(x, [i, y + 0.6, i + 2.4, y + 0.6], 0.2, "rgba(60,30,10,.35)"); }
+    A.ln(x, [0.6, 3, 37.4, 3], 0.4, "#d8a070", 0.8);
+  },
+  ramp(x) {
+    for (let j = 0; j < 14; j++) A.rr(x, 6 - j * 0.3, 4 + j, 28 + j * 0.6, 1.05, 0, j < 2 ? "#e8c890" : mixHex("#c8955a", "#8a5a32", j / 14));
+    x.fillStyle = A.lg(x, 0, 4, 0, 18, [[0, "rgba(255,255,255,.2)"], [1, "rgba(0,0,0,.15)"]]); x.beginPath(); x.moveTo(6, 4); x.lineTo(34, 4); x.lineTo(38.4, 18); x.lineTo(1.6, 18); x.closePath(); x.fill();
+    A.rr(x, 2, 3.4, 36, 1.4, 0.6, "#ffe0a8"); A.rr(x, 0, 17, 40, 1.4, 0.4, "#3a2a1a");
+    for (let i = 8; i < 34; i += 6) A.ln(x, [i, 6, i - (i - 20) * 0.12, 16], 0.35, "#a87444", 0.8);
+  },
+  column(x) {
+    A.rr(x, 3, 8, 14, 36, 0, A.lg(x, 3, 0, 17, 0, [[0, "#4a7060"], [0.5, "#3a5a4a"], [1, "#2a4236"]]));
+    const post = (y, h, c) => { A.rr(x, 4, y, 12, h, 0.3, c); x.fillStyle = A.lg(x, 4, 0, 16, 0, [[0, "rgba(255,255,255,.12)"], [1, "rgba(0,0,0,.18)"]]); x.fillRect(4, y, 12, h); };
+    post(11, 10, "#f2c94c"); A.text(x, "KINO", 10, 14.4, 10, 4.2, "#3a2a10", 800); A.rr(x, 6, 17, 8, 0.6, 0.2, "#8a6a2a");
+    post(22, 9, "#e8e4d8"); A.ln(x, [6, 25, 14, 25], 0.6, "#777"); A.ln(x, [6, 28, 12, 28], 0.6, "#777");
+    post(32, 9, "#d8566a"); A.text(x, "JAZZ", 10, 36.4, 10, 3.6, "#ffffff", 800);
+    A.rr(x, 1, 4, 18, 5, 1, "#2f4a3c"); x.beginPath(); x.ellipse(10, 4, 6, 2.6, 0, Math.PI, 0); x.fillStyle = "#2f4a3c"; x.fill(); A.el(x, 10, 1.4, 1, 1, "#d8b860");
+    A.rr(x, 1, 43, 18, 3, 0.6, "#26382e");
+  },
+  kiosk(body, roof, sign, signCol, txt, txtCol) {
+    return x => {
+      A.rr(x, 2, 10, 42, 30, 1, A.lg(x, 2, 0, 44, 0, [[0, shade(body, 0.06)], [1, shade(body, -0.12)]]));
+      A.rr(x, 0, 5.4, 46, 5.6, 1.2, roof); A.rr(x, 0, 10.2, 46, 0.8, 0.2, shade(roof, -0.3));
+      A.rr(x, 3, 11, 40, 6, 0.6, sign); A.text(x, txt, 23, 14.1, 36, 4.8, txtCol, 800);
+      x.fillStyle = A.lg(x, 0, 18, 0, 30, [[0, "#e4f2fa"], [1, "#9ab8c8"]]); x.fillRect(5, 18, 36, 12);
+      [["#e86a5a", 8, 21, 4, 8], ["#f2d04a", 14, 23, 5, 6], ["#5aa0e8", 26, 22, 5, 7], ["#8ad06a", 33, 21, 5, 8]].forEach(([c, X, Y, W, H]) => A.rr(x, X, Y, W, H, 0.8, c));
+      A.poly(x, [8, 30, 14, 18, 18, 18, 12, 30], "rgba(255,255,255,.3)");
+      x.strokeStyle = shade(body, -0.35); x.lineWidth = 0.6; x.strokeRect(5, 18, 36, 12); A.ln(x, [22.5, 18, 22.5, 30], 0.6, shade(body, -0.35));
+      A.rr(x, 4, 30, 38, 2, 0.4, shade(body, -0.2)); A.rr(x, 0, 39.6, 46, 2.4, 0.6, "#2a2a2a");
+    };
+  },
+  crate(x) {
+    A.rr(x, 1, 3, 16, 13, 0.8, "#7a5a3a"); for (const y of [7, 11]) A.ln(x, [1.4, y, 16.6, y], 0.5, "#5a3e24"); A.rr(x, 1, 3, 16, 2, 0.6, "#9a7a52");
+    A.el(x, 9, 9.4, 4.2, 3.2, "#ff4fa0"); A.el(x, 13.2, 6, 0.8, 0.8, "#ff4fa0"); A.el(x, 4.4, 12.6, 1, 0.8, "#ff4fa0"); A.el(x, 8, 8.4, 1.4, 0.8, "#ff9ac8");
+    A.rr(x, 7, 0.4, 4, 3, 0.8, "#c8c8c8");
+  },
+  mermaid(x) { A.el(x, 7, 7, 6.4, 6.4, "#e8c24a"); A.el(x, 7, 7, 5.2, 5.2, "#c73a3a"); A.el(x, 7, 5, 1.3, 1.3, "#f4e0c0"); x.beginPath(); x.moveTo(5.4, 6.4); x.quadraticCurveTo(7, 9.4, 8.6, 6.4); x.fillStyle = "#f4e0c0"; x.fill(); x.beginPath(); x.moveTo(7, 8); x.quadraticCurveTo(9, 10, 6.4, 11); x.quadraticCurveTo(8, 10.4, 7, 8); x.fillStyle = "#7ad0d0"; x.fill(); A.ln(x, [9.6, 3.6, 9.6, 8.4], 0.5, "#e8c24a"); A.ln(x, [4.4, 6, 3.2, 4.4], 0.5, "#e8c24a"); },
+  paczek(x) { A.el(x, 7, 6.6, 6.4, 5, "#d8902a"); A.el(x, 7, 5.6, 5.2, 3.4, "#ffd27a"); for (const [a, b] of [[4.6, 4], [8.6, 3.2], [10, 5.4], [6, 6.6]]) A.rr(x, a, b, 1.4, 0.6, 0.3, "#ffffff"); A.el(x, 7, 6.4, 1.2, 0.8, "#c84a5a"); },
+  seagull(x) { x.fillStyle = "#e0e4ea"; x.beginPath(); x.moveTo(0, 3); x.quadraticCurveTo(4, 0, 8, 4.4); x.quadraticCurveTo(13, 0, 18, 3); x.quadraticCurveTo(13, 2.6, 9, 6); x.quadraticCurveTo(5, 2.6, 0, 3); x.fill(); A.el(x, 9.4, 6.4, 3, 2, "#f4f4f4"); A.poly(x, [12, 6, 15, 6.4, 12, 7], "#ffb02a"); A.el(x, 11, 5.8, 0.4, 0.4, "#111"); A.ln(x, [0.4, 3, 2, 2.6], 0.8, "#555"); A.ln(x, [16, 2.6, 17.6, 3], 0.8, "#555"); },
+  gnome(x) { A.poly(x, [3, 5, 6, 0, 9, 5], "#d6453c"); A.el(x, 6, 6.6, 2.6, 2, "#f0c9a4"); A.el(x, 6, 9, 2.6, 2.4, "#f4f4f4"); A.rr(x, 2.4, 10.4, 7.2, 5, 1.6, "#3a6ab0"); A.rr(x, 3, 15, 2.4, 3, 0.8, "#3a2a1a"); A.rr(x, 6.6, 15, 2.4, 3, 0.8, "#3a2a1a"); A.el(x, 5, 6.4, 0.35, 0.35, "#111"); A.el(x, 7, 6.4, 0.35, 0.35, "#111"); A.el(x, 6, 7.4, 0.6, 0.5, "#e8a088"); },
+  ped(coat, leg, hair, f) {
+    return x => {
+      A.ln(x, [5.6, 23, 5.4 - f * 0.6, 33 - f * 2], 2.8, leg); A.ln(x, [10.4, 23, 10.6 + f * 0.6, 31 + f * 2], 2.8, leg);
+      A.rr(x, 3.6, 32.4 - f * 2, 3.6, 2, 0.8, "#111"); A.rr(x, 8.8, 30.4 + f * 2, 3.6, 2, 0.8, "#111");
+      A.ln(x, [3.2, 10.6, 2.2, 19], 2, coat); A.ln(x, [12.8, 10.6, 13.8, 19], 2, coat); A.el(x, 2.2, 19.6, 1, 1, "#e0b090"); A.el(x, 13.8, 19.6, 1, 1, "#e0b090");
+      x.beginPath(); x.moveTo(4.6, 8); x.lineTo(11.4, 8); x.quadraticCurveTo(13.4, 8.4, 13.2, 11); x.lineTo(13.4, 23.4); x.lineTo(2.6, 23.4); x.lineTo(2.8, 11); x.quadraticCurveTo(2.6, 8.4, 4.6, 8); x.closePath();
+      x.fillStyle = A.lg(x, 2.6, 0, 13.4, 0, [[0, shade(coat, 0.15)], [0.5, coat], [1, shade(coat, -0.25)]]); x.fill(); A.ln(x, [8, 9, 8, 23], 0.3, shade(coat, -0.3), 0.6);
+      A.rr(x, 6.6, 6.6, 2.8, 2, 0.6, "#c89878"); A.el(x, 8, 4.6, 3, 3.3, "#e0b090"); x.beginPath(); x.ellipse(8, 4, 3.2, 3.2, 0, Math.PI * 0.95, Math.PI * 2.05); x.fillStyle = hair; x.fill(); A.el(x, 8, 5.6, 3, 2.4, hair);
+    };
+  },
+  lamp(city, night) {
+    return x => {
+      const pole = night ? "#22242e" : "#3a3d48", lit = night ? "#fff2c8" : "#d8dce4";
+      A.rr(x, 6, 6, 2, 56, 0.6, A.lg(x, 6, 0, 8, 0, [[0, shade(pole, 0.35)], [1, pole]])); A.rr(x, 4, 59.6, 6, 4.4, 1, pole); A.rr(x, 5, 58, 4, 2, 0.6, pole);
+      if (city === "warsaw") { A.rr(x, 2, 3.8, 10, 1.6, 0.6, pole); A.rr(x, 0.6, 4.6, 5, 2.2, 1, pole); A.rr(x, 1, 6.2, 4.2, 0.8, 0.4, lit); }
+      else {
+        A.rr(x, 3.4, 0.2, 7.2, 2, 1, pole); A.poly(x, [3.6, 2, 10.4, 2, 9.6, 8, 4.4, 8], night ? "#ffe6a0" : "#d8d4c0");
+        A.ln(x, [7, 2, 7, 8], 0.35, pole); A.rr(x, 3.2, 7.8, 7.6, 1.2, 0.5, pole); A.el(x, 7, 0, 0.7, 0.7, pole);
+        if (!night) A.poly(x, [4.4, 2.4, 5.6, 2.4, 5.4, 7.6, 4.8, 7.6], "rgba(255,255,255,.5)");
+      }
+    };
+  },
+  stop(night) {
+    return x => {
+      A.rr(x, 0, 0, 44, 4, 1, "#3a3a44"); A.rr(x, 0, 3.2, 44, 0.8, 0.2, "#2a2a32");
+      for (const px of [2, 40]) A.rr(x, px, 4, 2, 30, 0.6, "#666");
+      x.fillStyle = night ? "rgba(255,230,160,.4)" : "rgba(180,210,230,.55)"; x.fillRect(4, 6, 36, 22); A.poly(x, [8, 28, 18, 6, 22, 6, 12, 28], "rgba(255,255,255,.25)");
+      x.strokeStyle = "#555"; x.lineWidth = 0.5; x.strokeRect(4, 6, 36, 22); A.ln(x, [22, 6, 22, 28], 0.5, "#555");
+      A.rr(x, 8, 21.6, 28, 2.2, 0.8, "#7a5a3a"); for (const lx of [10, 33]) A.rr(x, lx, 23.6, 1, 5, 0.3, "#444");
+      A.rr(x, 30, 8, 8, 10, 1, "#f2c94c"); A.text(x, "T", 34, 13.2, 6, 7, "#2a2a2a", 800); A.rr(x, 25, 8.6, 4, 6, 0.4, "#ffffff"); for (let i = 0; i < 4; i++) A.ln(x, [25.6, 9.8 + i * 1.2, 28.4, 9.8 + i * 1.2], 0.3, "#888");
+    };
+  },
+  crane(night) {
+    return x => {
+      const col = night ? "#2a3044" : "#3a4a6a", acc = night ? "#5a3a3a" : "#c8402a";
+      for (const lx of [30, 44]) A.rr(x, lx, 30, 6, 100, 0.4, A.lg(x, lx, 0, lx + 6, 0, [[0, shade(col, 0.25)], [1, col]]));
+      for (let j = 34; j < 128; j += 10) { A.ln(x, [31, j, 49, j + 8], 0.8, col); A.ln(x, [49, j, 31, j + 8], 0.6, col, 0.6); }
+      A.rr(x, 0, 22, 80, 8, 0.6, acc); for (let i = 2; i < 78; i += 6) A.ln(x, [i, 22.4, i + 3, 29.6], 0.5, shade(acc, -0.3), 0.7);
+      A.rr(x, 26, 14, 30, 10, 1, col); A.rr(x, 28, 16, 8, 5, 0.6, night ? "#ffd88a" : "#8ab0d0");
+      A.ln(x, [4, 30, 4, 58], 0.4, "#888"); A.rr(x, 1, 58, 6, 4, 0.8, col);
+      if (night) { A.el(x, 1, 23, 1.2, 1.2, "#ff3030"); A.el(x, 79, 23, 1.2, 1.2, "#ff3030"); }
+    };
+  },
+  fountain(night) {
+    return x => {
+      const stone = night ? "#4a4a58" : "#b8b0a0";
+      A.el(x, 23, 25, 21, 4.4, night ? "#3a3a48" : "#a8a090"); A.el(x, 23, 24, 18, 3.2, night ? "#2a4a6a" : "#6ab0d8"); A.el(x, 18, 23.4, 6, 1, "rgba(255,255,255,.4)");
+      A.rr(x, 21, 6, 4, 18, 1.4, A.lg(x, 21, 0, 25, 0, [[0, shade(stone, 0.2)], [1, shade(stone, -0.15)]])); A.el(x, 23, 6, 6.4, 2.2, stone);
+      x.strokeStyle = "rgba(191,230,255,.8)"; x.lineWidth = 0.5; for (const d of [-1, 1]) { x.beginPath(); x.moveTo(23, 5); x.quadraticCurveTo(23 + d * 6, -1, 23 + d * 9, 7); x.stroke(); x.beginPath(); x.moveTo(23, 4); x.quadraticCurveTo(23 + d * 3, 0, 23 + d * 5, 6); x.stroke(); }
+    };
+  }
+};
+function registerPropTwins() {
+  const K = 5;
+  hdTwin(SPR.bin, K, PROP_HD.bin); hdTwin(SPR.cone, K, PROP_HD.cone); hdTwin(SPR.barrier, K, PROP_HD.barrier); hdTwin(SPR.bench, K, PROP_HD.bench);
+  hdTwin(SPR.ramp, K, PROP_HD.ramp); hdTwin(SPR.column, K, PROP_HD.column); hdTwin(SPR.crate, K, PROP_HD.crate);
+  hdTwin(SPR.kiosk_bociek, K, PROP_HD.kiosk("#eef2f6", "#2b5fa8", "#2b5fa8", "#fff", "BOCIEK 24/7", "#ffffff"));
+  hdTwin(SPR.kiosk_paczus, K, PROP_HD.kiosk("#fde6ef", "#e2508a", "#e2508a", "#fff", "PĄCZUŚ", "#ffffff"));
+  hdTwin(SPR.kiosk_prasa, K, PROP_HD.kiosk("#d8e2c8", "#4a6a3a", "#f2f0e2", "#000", "PRASA", "#2a3a1a"));
+  hdTwin(SPR.c_mermaid, 6, PROP_HD.mermaid); hdTwin(SPR.c_paczek, 6, PROP_HD.paczek); hdTwin(SPR.c_seagull, 6, PROP_HD.seagull); hdTwin(SPR.c_gnome, 6, PROP_HD.gnome);
+  const coats = [["#8a3a3a", "#2a2a3a"], ["#3a5a8a", "#3a3a3a"], ["#c8a24a", "#4a3a2a"], ["#5a7a4a", "#2a2a2a"], ["#7a4a8a", "#222"]], hairs = ["#3a2a1a", "#7a5a3a", "#c8c0b0", "#1a1a1a", "#5a3a22"];
+  SPR.peds.forEach((frames, i) => frames.forEach((c, f) => hdTwin(c, K, PROP_HD.ped(coats[i][0], coats[i][1], hairs[i], f))));
+}
+
 /* Sprite caches */
 const SPR = {};
 const skaterCache = new Map();
@@ -1211,6 +1335,7 @@ function makeProps() {
   // glow sprite (additive light / bloom)
   m = mk(64, 64); let g = m.x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(0.25, "rgba(255,255,255,.45)"); g.addColorStop(1, "rgba(255,255,255,0)"); m.x.fillStyle = g; m.x.fillRect(0, 0, 64, 64); SPR.glow = m.c;
   SPR.glowCol = {};
+  registerPropTwins();
 }
 function glowOf(col) {
   let c = SPR.glowCol[col]; if (c) return c;
@@ -1496,6 +1621,7 @@ function makeCitySprites(city) {
     if (city === "warsaw") { R(m.x, 2, 4, 10, 2, pole); R(m.x, 1, 5, 4, 2, night ? "#fff2c0" : "#c8ccd8"); }
     else { R(m.x, 3, 0, 8, 2, pole); R(m.x, 4, 2, 6, 6, night ? "#ffe6a0" : "#d8d4c0"); R(m.x, 3, 8, 8, 1, pole); }
   }
+  hdTwin(lampD.c, 5, PROP_HD.lamp(city, false)); hdTwin(lampN.c, 5, PROP_HD.lamp(city, true));
   out.lamps = { day: lampD.c, night: lampN.c };
   // linden tree
   for (let t = 0; t < 2; t++) {
@@ -1523,6 +1649,7 @@ function makeCitySprites(city) {
   // bus / tram stop shelter
   const sd = mk(44, 34), sn = mk(44, 34);
   for (const [m, night] of [[sd, false], [sn, true]]) { R(m.x, 0, 0, 44, 4, "#3a3a44"); R(m.x, 2, 4, 2, 30, "#555"); R(m.x, 40, 4, 2, 30, "#555"); R(m.x, 4, 6, 36, 22, night ? "rgba(255,230,160,.35)" : "rgba(180,210,230,.55)"); R(m.x, 8, 22, 28, 3, "#7a5a3a"); R(m.x, 30, 8, 8, 10, "#f2c94c"); pixText(m.x, "T", 32, 10, "#2a2a2a"); }
+  hdTwin(sd.c, 5, PROP_HD.stop(false)); hdTwin(sn.c, 5, PROP_HD.stop(true));
   out.extras.stop = { day: sd.c, night: sn.c };
   // city specials
   if (city === "gdansk") {
@@ -1533,11 +1660,13 @@ function makeCitySprites(city) {
       R(m.x, 0, 22, 80, 8, acc); R(m.x, 26, 14, 30, 10, col); limb(m.x, 4, 30, 4, 60, 1, "#888"); R(m.x, 1, 58, 6, 4, col);
       if (night) { R(m.x, 0, 22, 2, 2, "#ff3030"); R(m.x, 78, 22, 2, 2, "#ff3030"); }
     }
+    hdTwin(cd.c, 4, PROP_HD.crane(false)); hdTwin(cn.c, 4, PROP_HD.crane(true));
     out.extras.crane = { day: cd.c, night: cn.c };
   }
   if (city === "rzeszow") {
     const fd = mk(46, 30), fn = mk(46, 30);
     for (const [m, night] of [[fd, false], [fn, true]]) { ellipse(m.x, 23, 25, 21, 4, night ? "#3a3a48" : "#a8a090"); ellipse(m.x, 23, 24, 18, 3, night ? "#2a4a6a" : "#6ab0d8"); R(m.x, 21, 6, 4, 18, night ? "#4a4a58" : "#b8b0a0"); ellipse(m.x, 23, 6, 6, 2, night ? "#4a4a58" : "#b8b0a0"); for (let i = 0; i < 6; i++) P(m.x, 17 + i * 2, 2 + (i % 2), "#bfe6ff"); }
+    hdTwin(fd.c, 5, PROP_HD.fountain(false)); hdTwin(fn.c, 5, PROP_HD.fountain(true));
     out.extras.fountain = { day: fd.c, night: fn.c };
   }
   if (city === "wroclaw") {
@@ -1547,40 +1676,57 @@ function makeCitySprites(city) {
 }
 
 /* ---------- Skylines (far + near), per city, day and night ---------- */
+/* HD skyline: replays the shapes the pixel skyline drew, with shading, window rows and glowing lights. */
+function skylineHD(x, ops, night, layer) {
+  const r = RNG(layer === "far" ? 3 : 4), k = x.getTransform().a;
+  for (const op of ops) {
+    if (op[0] === "b") {
+      const [, X, Y, w, h, c, step] = op;
+      x.fillStyle = A.lg(x, 0, Y, 0, Y + h, [[0, shade(c, 0.1)], [1, shade(c, -0.08)]]); x.fillRect(X, Y, w, h);
+      x.fillStyle = rgba(shade(c, -0.25), 0.6); x.fillRect(X + w - Math.min(2, w * 0.15), Y, Math.min(2, w * 0.15), h);
+      x.fillStyle = rgba(shade(c, 0.3), 0.7); x.fillRect(X, Y, w, 0.5);
+      if (!night) for (let j = Y + 3; j < Y + h - 2; j += step) for (let i = X + 1; i < X + w - 1.5; i += 3) { x.fillStyle = r() < 0.5 ? "rgba(255,255,255,.10)" : "rgba(0,0,30,.10)"; x.fillRect(i, j, 1.4, 1.6); }
+      if (h > 45 && r() < 0.35) A.ln(x, [X + w * 0.7, Y, X + w * 0.7, Y - 5], 0.3, c);
+    } else if (op[0] === "r") { const [, X, Y, w, h, c] = op; x.fillStyle = c; x.fillRect(X, Y, w, h); }
+    else if (op[0] === "p") { const [, i, j, c] = op; x.save(); x.shadowColor = c; x.shadowBlur = 2 * k; A.rr(x, i, j, 1, 1.2, 0.2, c); x.restore(); }
+  }
+}
 function makeSkyline(city) {
   const W = 800, H = 120, far = mk(W, H), farN = mk(W, H), near = mk(W, H), nearN = mk(W, H), rng = RNG(CITIES[city].seed);
   const fc = { warsaw: "#6a6a98", rzeszow: "#8a7a8a", gdansk: "#6a7088", wroclaw: "#6a7690" }[city];
   const nc = { warsaw: "#3a3a60", rzeszow: "#5a4a58", gdansk: "#3e4660", wroclaw: "#3e4864" }[city];
   const draw = (m, col, isNight, layer) => {
-    const x = m.x, lit = isNight ? (city === "warsaw" ? "#ff9ae0" : "#ffd88a") : null;
-    const box = (X, Y, w, h, c = col, winStep = 4) => { R(x, X, Y, w, H - Y, c); if (lit) for (let j = Y + 3; j < H - 2; j += winStep) for (let i = X + 1; i < X + w - 1; i += 3) if (rng() < 0.25) P(x, i, j, lit); };
+    const x = m.x, lit = isNight ? (city === "warsaw" ? "#ff9ae0" : "#ffd88a") : null, ops = [];
+    const Rr = (X, Y, w, h, c) => { R(x, X, Y, w, h, c); ops.push(["r", X, Y, w, h, c]); };
+    const box = (X, Y, w, h, c = col, winStep = 4) => { R(x, X, Y, w, H - Y, c); ops.push(["b", X, Y, w, H - Y, c, winStep]); if (lit) for (let j = Y + 3; j < H - 2; j += winStep) for (let i = X + 1; i < X + w - 1; i += 3) if (rng() < 0.25) { P(x, i, j, lit); ops.push(["p", i, j, lit]); } };
     if (layer === "far") {
       for (let X = 0; X < W; ) { const w = rng.int(14, 34), h = rng.int(18, 46); box(X, H - h, w, h); X += w + rng.int(0, 6); }
       if (city === "warsaw") {
         // Palace of Culture and Science: stepped tower with spire
-        const cx = 210; box(cx - 30, H - 34, 60, 34); box(cx - 20, H - 52, 40, 52); box(cx - 13, H - 70, 26, 70); box(cx - 8, H - 84, 16, 84); box(cx - 4, H - 96, 8, 96); R(x, cx - 1, H - 116, 2, 20, col);
-        for (const [X, w, h] of [[300, 18, 92], [330, 22, 104], [360, 16, 80], [560, 20, 98], [590, 14, 112], [612, 24, 88]]) { box(X, H - h, w, h); if (isNight) R(x, X + w / 2, H - h - 2, 1, 2, "#ff3030"); }
-        R(x, 598, H - 120, 1, 8, col);
+        const cx = 210; box(cx - 30, H - 34, 60, 34); box(cx - 20, H - 52, 40, 52); box(cx - 13, H - 70, 26, 70); box(cx - 8, H - 84, 16, 84); box(cx - 4, H - 96, 8, 96); Rr(cx - 1, H - 116, 2, 20, col);
+        for (const [X, w, h] of [[300, 18, 92], [330, 22, 104], [360, 16, 80], [560, 20, 98], [590, 14, 112], [612, 24, 88]]) { box(X, H - h, w, h); if (isNight) Rr(X + w / 2, H - h - 2, 1, 2, "#ff3030"); }
+        Rr(598, H - 120, 1, 8, col);
       }
       if (city === "rzeszow") {
-        for (let X = 0; X < W; X += 2) { const hh = 22 + Math.sin(X / 70) * 10 + Math.sin(X / 23) * 4; R(x, X, H - hh, 2, hh, shade(col, 0.08)); }
-        const tw = (X, h) => { box(X, H - h, 10, h); R(x, X + 2, H - h - 10, 6, 10, col); R(x, X + 4, H - h - 16, 2, 6, col); };
+        for (let X = 0; X < W; X += 2) { const hh = 22 + Math.sin(X / 70) * 10 + Math.sin(X / 23) * 4; Rr(X, H - hh, 2, hh, shade(col, 0.08)); }
+        const tw = (X, h) => { box(X, H - h, 10, h); Rr(X + 2, H - h - 10, 6, 10, col); Rr(X + 4, H - h - 16, 2, 6, col); };
         tw(160, 60); tw(420, 52); tw(640, 66); box(470, H - 40, 50, 40); box(300, H - 34, 70, 34);
       }
       if (city === "gdansk") {
-        R(x, 0, H - 12, W, 12, isNight ? "#18304a" : "#5a88b0");     // sea on the horizon
-        box(240, H - 78, 40, 78); box(250, H - 92, 20, 92); for (let i = 0; i < 4; i++) R(x, 248 + i * 6, H - 98, 3, 6, col);   // brick Gothic church
-        for (const X of [420, 470, 560, 690]) { R(x, X, H - 70, 3, 70, col); R(x, X - 22, H - 72, 40, 3, col); R(x, X + 10, H - 70, 1, 18, col); }
-        box(520, H - 22, 60, 10); R(x, 530, H - 34, 6, 12, col);   // ship
+        Rr(0, H - 12, W, 12, isNight ? "#18304a" : "#5a88b0");     // sea on the horizon
+        box(240, H - 78, 40, 78); box(250, H - 92, 20, 92); for (let i = 0; i < 4; i++) Rr(248 + i * 6, H - 98, 3, 6, col);   // brick Gothic church
+        for (const X of [420, 470, 560, 690]) { Rr(X, H - 70, 3, 70, col); Rr(X - 22, H - 72, 40, 3, col); Rr(X + 10, H - 70, 1, 18, col); }
+        box(520, H - 22, 60, 10); Rr(530, H - 34, 6, 12, col);   // ship
       }
       if (city === "wroclaw") {
-        const spire = (X, h) => { box(X, H - h, 12, h); for (let j = 0; j < 22; j++) R(x, X + 6 - j / 4, H - h - 22 + j, Math.max(1, j / 2), 1, col); };
-        spire(180, 70); spire(196, 70); box(400, H - 54, 30, 54); R(x, 412, H - 74, 6, 20, col); box(640, H - 112, 18, 112); R(x, 648, H - 120, 2, 8, col);
-        R(x, 0, H - 10, W, 10, isNight ? "#18304a" : "#6a90b8");   // the Odra
+        const spire = (X, h) => { box(X, H - h, 12, h); for (let j = 0; j < 22; j++) Rr(X + 6 - j / 4, H - h - 22 + j, Math.max(1, j / 2), 1, col); };
+        spire(180, 70); spire(196, 70); box(400, H - 54, 30, 54); Rr(412, H - 74, 6, 20, col); box(640, H - 112, 18, 112); Rr(648, H - 120, 2, 8, col);
+        Rr(0, H - 10, W, 10, isNight ? "#18304a" : "#6a90b8");   // the Odra
       }
     } else {
-      for (let X = 0; X < W; ) { const w = rng.int(26, 60), h = rng.int(30, 70); box(X, H - h, w, h, col, 5); if (rng() < 0.3) R(x, X + 4, H - h - 6, w - 8, 6, col); X += w + rng.int(2, 12); }
+      for (let X = 0; X < W; ) { const w = rng.int(26, 60), h = rng.int(30, 70); box(X, H - h, w, h, col, 5); if (rng() < 0.3) Rr(X + 4, H - h - 6, w - 8, 6, col); X += w + rng.int(2, 12); }
     }
+    hdTwin(m.c, 3, hx => skylineHD(hx, ops, isNight, layer));
   };
   draw(far, fc, false, "far"); draw(farN, nc, true, "far"); draw(near, shade(fc, -0.15), false, "near"); draw(nearN, shade(nc, -0.25), true, "near");
   return { far: far.c, farN: farN.c, near: near.c, nearN: nearN.c };
@@ -2955,8 +3101,8 @@ const R3 = {
     // ---- camera: behind and above the player, smoothed
     const sf = clamp(pl.speed / pl.baseMax, 0, 1.5);
     this.camLat = lerp(this.camLat ?? pl.x, pl.x * 0.78, 1 - Math.exp(-dt * 5));
-    this.camH = lerp(this.camH ?? 0, Math.max(0, pl.y) * 0.45, 1 - Math.exp(-dt * 4));
-    const back = 1950 + (pl.boosting ? 300 : 0) + sf * 200, camZ = pl.z - back;
+    this.camH = lerp(this.camH ?? 0, Math.max(0, pl.y) * 0.7, 1 - Math.exp(-dt * 4));
+    const back = 1950 + (pl.boosting ? 300 : 0) + sf * 200 + this.camH * 0.5, camZ = pl.z - back;
     const cam = this.camera, cp = this.at(camZ, this.camLat, 1180 + this.camH);
     const look = this.at(pl.z + 2600, this.camLat * 0.55, 200 + this.camH * 0.7);
     const sh = S.opt.reduced ? 0 : G.shake; if (sh) { cp.x += rnd(-1, 1) * sh * 0.6; cp.y += rnd(-1, 1) * sh * 0.5; }
@@ -3127,7 +3273,7 @@ Object.assign(R3, {
   },
   poseSkater(s, m, G, dt, night) {
     const pl = G.player, behind = !s.isPlayer && s.z < pl.z - SEG * 0.5;
-    const hide = behind && s.z < pl.z - SEG * 2.5;   // rivals you've passed fade out before they block the camera
+    const hide = behind && s.z < pl.z - SEG * 1.2;   // rivals you've passed disappear before they block the camera
     m.root.visible = !hide && !(s.invuln > 0 && Math.floor(s.t * 14) % 2); m.blob.visible = !hide;
     if (hide) return;
     if (m.ghost !== behind) { m.ghost = behind; for (const mt of m.mats) { mt.transparent = behind; mt.opacity = behind ? 0.32 : 1; mt.needsUpdate = true; } }
