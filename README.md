@@ -35,7 +35,7 @@ To play it on your own computer, open `index.html` in Chrome, Edge, Firefox or S
 - **Collectibles:** 20 hidden items, 5 per city (mermaid badges, golden pączki, seagulls and gnomes).
 - **Saving:** auto-saves to `localStorage` with a versioned format, plus JSON export and import.
 - **Accessibility:** colourblind mode (shapes and outlines, not only colour), three text sizes, reduced motion, subtitles for every voice line, remappable keys and full keyboard menus.
-- **Graphics style:** HD (default) draws the world at full screen resolution, with smoothly upscaled sprites, soft shadows, layered clouds, street-lamp light pools, wet-road reflections, bloom and detailed asphalt. Pixel switches back to the original 400 × 225 look. Change it in Options → Graphics → Style.
+- **Graphics style:** HD (default) draws the world at full screen resolution. The skaters, buildings, trees and billboards are redrawn as detailed smooth art (shaded clothes, faces, hair, window frames, cornices, balconies, brickwork, lit rooms at night); other sprites are smoothly upscaled. It also adds soft shadows, layered clouds, street-lamp light pools, wet-road reflections, bloom and detailed asphalt. Pixel switches back to the original 400 × 225 look. Change it in Options → Graphics → Style.
 - **Performance:** Auto quality drops to Medium or Low when the frame rate falls, then steps back up.
 
 ## Optional assets
